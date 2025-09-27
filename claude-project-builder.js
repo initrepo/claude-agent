@@ -8,7 +8,7 @@
  */
 
 import { spawn } from 'child_process';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -530,13 +530,46 @@ REPOSITORY:
         console.log('🔧 Setting up Claude Code integration...\n');
 
         try {
-            // Run the postinstall script
-            const { spawn } = await import('child_process');
-            const postinstallPath = new URL('../scripts/postinstall.js', import.meta.url);
+            // Create Claude Code settings directly instead of relying on postinstall script
+            const claudeDir = path.join(process.cwd(), '.claude');
+            if (!existsSync(claudeDir)) {
+                mkdirSync(claudeDir, { recursive: true });
+                console.log('✅ Created .claude directory');
+            }
 
-            spawn('node', [fileURLToPath(postinstallPath)], {
-                stdio: 'inherit'
-            });
+            // Create Claude Code settings for the agent
+            const claudeSettings = {
+                "permissions": {
+                    "allow": [
+                        "Bash(find:*)",
+                        "Bash(node:*)",
+                        "Bash(npm:*)",
+                        "Bash(npx:*)",
+                        "Bash(echo:*)",
+                        "Bash(timeout:*)",
+                        "Read(./**)",
+                        "Write(./**)",
+                        "Edit(./**)",
+                        "Glob(./**)",
+                        "Grep(./**)",
+                        "mcp__initrepo__*"
+                    ],
+                    "deny": [
+                        "Read(/mnt/c/initrepo-mcp/**)",
+                        "Write(/mnt/c/initrepo-mcp/**)"
+                    ],
+                    "ask": []
+                },
+                "auto_run_commands": false
+            };
+
+            const settingsPath = path.join(claudeDir, 'settings.local.json');
+            writeFileSync(settingsPath, JSON.stringify(claudeSettings, null, 2));
+            console.log('✅ Created Claude Code settings');
+
+            console.log('\n🎉 Claude Code integration setup completed!');
+            console.log('\n📋 Settings created at:', settingsPath);
+            console.log('\nYou can now use the agent with Claude Code CLI!');
 
         } catch (error) {
             console.error('❌ Claude Code setup failed:', error.message);

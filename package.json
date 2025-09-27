@@ -1,6 +1,6 @@
 {
   "name": "initrepo-claude-agent",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "AI agent for building InitRepo projects systematically using MCP tools",
   "type": "module",
   "main": "claude-project-builder.js",
@@ -14,6 +14,7 @@
     "publish:patch": "./scripts/publish.sh patch",
     "publish:minor": "./scripts/publish.sh minor",
     "publish:major": "./scripts/publish.sh major",
+    "publish:win": "scripts\\publish.bat",
     "prepublishOnly": "echo '✅ Pre-publish checks passed'"
   },
   "keywords": [
