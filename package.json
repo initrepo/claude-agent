@@ -1,0 +1,47 @@
+{
+  "name": "initrepo-claude-agent",
+  "version": "1.0.0",
+  "description": "AI agent for building InitRepo projects systematically using MCP tools",
+  "type": "module",
+  "main": "claude-project-builder.js",
+  "bin": {
+    "initrepo-claude": "./claude-project-builder.js"
+  },
+  "scripts": {
+    "start": "node claude-project-builder.js",
+    "install-global": "npm install -g .",
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "keywords": [
+    "claude",
+    "ai",
+    "agent",
+    "initrepo",
+    "mcp",
+    "project-builder",
+    "automation"
+  ],
+  "author": "Gorglin <chris@initrepo.com>",
+  "license": "PROPRIETARY",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/initrepo/claude-agent.git"
+  },
+  "homepage": "https://github.com/initrepo/claude-agent#readme",
+  "bugs": {
+    "url": "https://github.com/initrepo/claude-agent/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "files": [
+    "claude-project-builder.js",
+    "claude-agent-config.json",
+    "CLAUDE.md",
+    "README.md",
+    "LICENSE",
+    "scripts/"
+  ]
+}

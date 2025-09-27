@@ -366,22 +366,48 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
     if (args.includes('--help') || args.includes('-h')) {
         console.log(`
-Claude Project Builder Agent
+🤖 Claude Project Builder Agent v1.0
 
-Usage:
+DESCRIPTION:
+  Intelligent AI agent for building InitRepo projects systematically using MCP tools.
+  Follows a 4-phase structured workflow: Discovery → Planning → Implementation → Quality Assurance
+
+USAGE:
+  initrepo-claude [options]
   node claude-project-builder.js [options]
 
-Options:
+OPTIONS:
   --help, -h        Show this help message
+  --version, -v     Show version information
   --phase <phase>   Start from specific phase (discovery|planning|implementation|quality)
   --project <id>    Use specific project ID
   --dry-run         Simulation mode (no actual changes)
 
-Examples:
-  node claude-project-builder.js                    # Full project build
-  node claude-project-builder.js --phase planning   # Start from planning phase
-  node claude-project-builder.js --dry-run          # Simulation mode
+EXAMPLES:
+  initrepo-claude                                   # Full project build
+  initrepo-claude --phase planning                 # Start from planning phase
+  initrepo-claude --dry-run                        # Simulation mode
+  node claude-project-builder.js --project 123     # Use specific project
+
+INSTALLATION:
+  npm install -g initrepo-claude-agent
+  # Or: curl -fsSL https://raw.githubusercontent.com/initrepo/claude-agent/master/install.sh | bash
+
+DOCUMENTATION:
+  • CLAUDE.md - Claude Code integration guide
+  • README.md - Full documentation
+  • CLAUDE_AGENT_USAGE_GUIDE.md - Usage instructions
+
+REPOSITORY:
+  https://github.com/initrepo/claude-agent
+
+⚠️  NOTE: Requires InitRepo MCP server for full functionality.
         `);
+        process.exit(0);
+    }
+
+    if (args.includes('--version') || args.includes('-v')) {
+        console.log('Claude Project Builder Agent v1.0.0');
         process.exit(0);
     }
 
