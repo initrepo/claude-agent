@@ -69,29 +69,35 @@ class ClaudeCommandSetup {
   createCommands() {
     console.log('📝 Creating command files...');
 
+    // Detect if we're in the development environment or installed package
+    const isDevelopment = existsSync(path.join(this.workingDirectory, 'claude-code-extension'));
+    const commandPrefix = isDevelopment ?
+      'claude-code-extension/commands/' :
+      'node_modules/initrepo-claude-agent/claude-code-extension/commands/';
+
     const commands = [
       {
         name: 'initrepo-agent',
         description: 'Run autonomous InitRepo project building',
-        script: 'node node_modules/initrepo-claude-agent/claude-code-extension/commands/autonomous-build.js',
+        script: `node ${commandPrefix}autonomous-build.js`,
         emoji: '🤖'
       },
       {
         name: 'initrepo-status',
         description: 'Check InitRepo project status and progress',
-        script: 'node node_modules/initrepo-claude-agent/claude-code-extension/commands/status.js',
+        script: `node ${commandPrefix}status.js`,
         emoji: '📊'
       },
       {
         name: 'initrepo-verify',
         description: 'Verify InitRepo task completion and quality',
-        script: 'node node_modules/initrepo-claude-agent/claude-code-extension/commands/verify.js $1',
+        script: `node ${commandPrefix}verify.js $1`,
         emoji: '✅'
       },
       {
         name: 'initrepo-check',
         description: 'Validate InitRepo setup and environment',
-        script: 'npx initrepo-claude --check',
+        script: isDevelopment ? 'node claude-project-builder.js --check' : 'npx initrepo-claude --check',
         emoji: '🔍'
       }
     ];
@@ -106,17 +112,18 @@ class ClaudeCommandSetup {
 
   generateCommandFile(cmd) {
     return `---
-name: ${cmd.name}
 description: ${cmd.description}
+allowed-tools:
+  - Bash(node:*)
+  - Bash(npm:*)
+  - Bash(npx:*)
 ---
 
 ${cmd.emoji} ${cmd.description}
 
 This command will ${cmd.description.toLowerCase()}.
 
-\`\`\`bash
 ${cmd.script}
-\`\`\`
 `;
   }
 
