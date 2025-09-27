@@ -8,15 +8,27 @@
  */
 
 import { spawn } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 class ClaudeProjectBuilderAgent {
     constructor() {
         this.mcpServer = null;
-        this.currentProject = null;
         this.taskQueue = [];
         this.completedTasks = [];
         this.phase = 'discovery';
+        this.workingDirectory = process.cwd();
+        this.mcpServerPath = this.findMcpServer();
+
+        // Set current project info immediately
+        this.currentProject = {
+            id: path.basename(this.workingDirectory),
+            name: path.basename(this.workingDirectory),
+            path: this.workingDirectory,
+            docsPath: path.join(this.workingDirectory, 'docs')
+        };
+
         this.metrics = {
             startTime: new Date(),
             tasksCompleted: 0,
@@ -25,19 +37,86 @@ class ClaudeProjectBuilderAgent {
         };
     }
 
+    findMcpServer() {
+        const possiblePaths = [
+            // Try current project's node_modules first
+            path.join(this.workingDirectory, 'node_modules', 'initrepo-mcp', 'dist', 'packages', 'mcp-server', 'src', 'index.js'),
+            // Try global installation
+            '/usr/local/lib/node_modules/initrepo-mcp/dist/packages/mcp-server/src/index.js',
+            // Try adjacent directory (development setup)
+            path.join(path.dirname(this.workingDirectory), 'initrepo-mcp', 'dist', 'packages', 'mcp-server', 'src', 'index.js'),
+            // Try standard location
+            '/mnt/c/initrepo-mcp/dist/packages/mcp-server/src/index.js'
+        ];
+
+        for (const serverPath of possiblePaths) {
+            if (existsSync(serverPath)) {
+                console.log(`✅ Found MCP server at: ${serverPath}`);
+                return {
+                    path: serverPath,
+                    cwd: path.dirname(path.dirname(path.dirname(path.dirname(serverPath))))
+                };
+            }
+        }
+
+        throw new Error(`❌ MCP server not found. Tried:\n${possiblePaths.join('\n')}\n\nPlease install initrepo-mcp or ensure it's available.`);
+    }
+
     async initialize() {
-        console.log('🤖 Claude Project Builder Agent v1.0');
+        console.log('🤖 Claude Project Builder Agent v1.1');
+        console.log(`📁 Working directory: ${this.workingDirectory}`);
         console.log('🚀 Initializing MCP connection...');
 
-        // Start MCP server
-        this.mcpServer = spawn('node', ['dist/packages/mcp-server/src/index.js'], {
+        // Start MCP server with dynamic path
+        this.mcpServer = spawn('node', [this.mcpServerPath.path], {
             stdio: ['pipe', 'pipe', 'pipe'],
-            cwd: process.cwd()
+            cwd: this.mcpServerPath.cwd,
+            env: {
+                ...process.env,
+                'AGENT_MODE': 'project_builder',
+                'LOG_LEVEL': 'info',
+                'PROJECT_ROOT': this.workingDirectory
+            }
         });
 
         // Wait for server to be ready
         await this.waitForServerReady();
         console.log('✅ MCP Server connected and ready');
+
+        console.log(`📋 Current project: ${this.currentProject.name}`);
+        console.log(`📚 Documentation path: ${this.currentProject.docsPath}`);
+
+        // Validate project structure
+        await this.validateProjectStructure();
+    }
+
+    async validateProjectStructure() {
+        console.log('🔍 Validating project structure...');
+
+        const requiredItems = [
+            { path: this.currentProject.docsPath, type: 'directory', name: 'docs folder' },
+            { path: path.join(this.currentProject.docsPath, 'README.md'), type: 'file', name: 'docs/README.md' },
+        ];
+
+        let missingItems = [];
+
+        for (const item of requiredItems) {
+            if (!existsSync(item.path)) {
+                missingItems.push(item.name);
+                console.log(`⚠️  Missing ${item.name}: ${item.path}`);
+            } else {
+                console.log(`✅ Found ${item.name}`);
+            }
+        }
+
+        if (missingItems.length > 0) {
+            console.log(`\n⚠️  Project structure validation warnings:`);
+            console.log(`   Missing: ${missingItems.join(', ')}`);
+            console.log(`   The agent will work better with proper InitRepo documentation structure.`);
+            console.log(`   Consider running 'initrepo init' to set up the project structure.`);
+        } else {
+            console.log('✅ Project structure validation passed');
+        }
     }
 
     async waitForServerReady() {
@@ -366,7 +445,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
     if (args.includes('--help') || args.includes('-h')) {
         console.log(`
-🤖 Claude Project Builder Agent v1.0
+🤖 Claude Project Builder Agent v1.1
 
 DESCRIPTION:
   Intelligent AI agent for building InitRepo projects systematically using MCP tools.
@@ -377,17 +456,21 @@ USAGE:
   node claude-project-builder.js [options]
 
 OPTIONS:
-  --help, -h        Show this help message
-  --version, -v     Show version information
-  --phase <phase>   Start from specific phase (discovery|planning|implementation|quality)
-  --project <id>    Use specific project ID
-  --dry-run         Simulation mode (no actual changes)
+  --help, -h              Show this help message
+  --version, -v           Show version information
+  --check                 Run environment and setup check
+  --setup-claude-code     Setup Claude Code integration
+  --phase <phase>         Start from specific phase (discovery|planning|implementation|quality)
+  --project <id>          Use specific project ID
+  --dry-run               Simulation mode (no actual changes)
 
 EXAMPLES:
-  initrepo-claude                                   # Full project build
-  initrepo-claude --phase planning                 # Start from planning phase
-  initrepo-claude --dry-run                        # Simulation mode
-  node claude-project-builder.js --project 123     # Use specific project
+  initrepo-claude --check                          # Check setup and environment
+  initrepo-claude --setup-claude-code              # Setup Claude Code integration
+  initrepo-claude                                  # Full project build
+  initrepo-claude --phase planning                # Start from planning phase
+  initrepo-claude --dry-run                       # Simulation mode
+  node claude-project-builder.js --project 123    # Use specific project
 
 INSTALLATION:
   npm install -g initrepo-claude-agent
@@ -407,7 +490,59 @@ REPOSITORY:
     }
 
     if (args.includes('--version') || args.includes('-v')) {
-        console.log('Claude Project Builder Agent v1.0.0');
+        console.log('Claude Project Builder Agent v1.1.0');
+        process.exit(0);
+    }
+
+    if (args.includes('--check') || args.includes('--setup-check')) {
+        console.log('🔍 Running setup and environment check...\n');
+
+        try {
+            // Create agent but skip initialization
+            const checkAgent = new ClaudeProjectBuilderAgent();
+            console.log('✅ Agent initialization successful');
+
+            // Check if we can find MCP server
+            console.log(`✅ MCP server found at: ${checkAgent.mcpServerPath.path}`);
+
+            // Check current project
+            console.log(`✅ Current project: ${checkAgent.currentProject.name} (${checkAgent.workingDirectory})`);
+
+            // Check docs folder
+            if (existsSync(checkAgent.currentProject.docsPath)) {
+                console.log(`✅ Documentation folder found: ${checkAgent.currentProject.docsPath}`);
+            } else {
+                console.log(`⚠️  Documentation folder not found: ${checkAgent.currentProject.docsPath}`);
+            }
+
+            console.log('\n🎉 Setup check completed successfully!');
+            console.log('   You can now run: initrepo-claude');
+
+        } catch (error) {
+            console.error('❌ Setup check failed:', error.message);
+            process.exit(1);
+        }
+
+        process.exit(0);
+    }
+
+    if (args.includes('--setup-claude-code')) {
+        console.log('🔧 Setting up Claude Code integration...\n');
+
+        try {
+            // Run the postinstall script
+            const { spawn } = await import('child_process');
+            const postinstallPath = new URL('../scripts/postinstall.js', import.meta.url);
+
+            spawn('node', [fileURLToPath(postinstallPath)], {
+                stdio: 'inherit'
+            });
+
+        } catch (error) {
+            console.error('❌ Claude Code setup failed:', error.message);
+            process.exit(1);
+        }
+
         process.exit(0);
     }
 

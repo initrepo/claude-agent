@@ -32,11 +32,27 @@ try {
 
   // Create Claude Code settings for the agent
   const claudeSettings = {
-    "bash_command_allowlist": [
-      "find:*",
-      "node:*",
-      "npm:*"
-    ],
+    "permissions": {
+      "allow": [
+        "Bash(find:*)",
+        "Bash(node:*)",
+        "Bash(npm:*)",
+        "Bash(npx:*)",
+        "Bash(echo:*)",
+        "Bash(timeout:*)",
+        "Read(./**)",
+        "Write(./**)",
+        "Edit(./**)",
+        "Glob(./**)",
+        "Grep(./**)",
+        "mcp__initrepo__*"
+      ],
+      "deny": [
+        "Read(/mnt/c/initrepo-mcp/**)",
+        "Write(/mnt/c/initrepo-mcp/**)"
+      ],
+      "ask": []
+    },
     "auto_run_commands": false
   };
 

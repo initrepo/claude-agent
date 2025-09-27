@@ -16,11 +16,12 @@
   "mcpIntegration": {
     "serverConfig": {
       "command": "node",
-      "args": ["dist/packages/mcp-server/src/index.js"],
-      "cwd": "/mnt/c/initrepo-mcp",
+      "args": ["auto-detected"],
+      "cwd": "auto-detected",
       "env": {
         "AGENT_MODE": "project_builder",
-        "LOG_LEVEL": "info"
+        "LOG_LEVEL": "info",
+        "PROJECT_ROOT": "current-working-directory"
       }
     },
     "tools": {
