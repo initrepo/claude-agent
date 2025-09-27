@@ -228,7 +228,10 @@ function generateTaskVerificationReport(taskId, data) {
   report += `### 📋 Task Information\n`;
   report += `- **ID**: ${taskId}\n`;
   report += `- **Source**: ${taskContext.source?.filePath || 'Unknown'}\n`;
-  report += `- **Content**: ${taskContext.content?.split('\n')[0] || 'No description'}\n\n`;
+  const contentSummary = typeof taskContext.content === 'string' ?
+    taskContext.content.split('\n')[0] :
+    (taskContext.content?.description || taskContext.content?.title || 'No description');
+  report += `- **Content**: ${contentSummary}\n\n`;
 
   // Context validation
   report += `### 🔍 Context Validation\n`;

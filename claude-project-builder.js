@@ -530,7 +530,7 @@ REPOSITORY:
         console.log('🔧 Setting up Claude Code integration...\n');
 
         try {
-            // Create Claude Code settings directly instead of relying on postinstall script
+            // Create Claude Code settings directory
             const claudeDir = path.join(process.cwd(), '.claude');
             if (!existsSync(claudeDir)) {
                 mkdirSync(claudeDir, { recursive: true });
@@ -567,16 +567,37 @@ REPOSITORY:
             writeFileSync(settingsPath, JSON.stringify(claudeSettings, null, 2));
             console.log('✅ Created Claude Code settings');
 
-            console.log('\n🎉 Claude Code integration setup completed!');
-            console.log('\n📋 Settings created at:', settingsPath);
-            console.log('\nYou can now use the agent with Claude Code CLI!');
+            // Run the command setup script
+            console.log('🔧 Setting up Claude Code commands...');
+            const { spawn } = await import('child_process');
+            const setupScript = path.join(path.dirname(fileURLToPath(import.meta.url)), 'scripts', 'setup-claude-commands.js');
+
+            const setupProcess = spawn('node', [setupScript], {
+                stdio: 'inherit',
+                cwd: process.cwd()
+            });
+
+            setupProcess.on('close', (code) => {
+                if (code === 0) {
+                    console.log('\n🎉 Claude Code integration setup completed!');
+                    console.log('\n📋 Available Commands:');
+                    console.log('   /initrepo-agent     - Start autonomous building');
+                    console.log('   /initrepo-status    - Check project status');
+                    console.log('   /initrepo-verify    - Verify completion');
+                    console.log('   npm run claude:agent - Alternative access');
+                    console.log('\n🚀 Ready to use in Claude Code!');
+                } else {
+                    console.error('❌ Command setup failed');
+                }
+                process.exit(code);
+            });
 
         } catch (error) {
             console.error('❌ Claude Code setup failed:', error.message);
             process.exit(1);
         }
 
-        process.exit(0);
+        return; // Don't exit immediately, let spawn handle it
     }
 
     // Run the agent

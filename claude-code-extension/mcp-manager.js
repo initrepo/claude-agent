@@ -307,7 +307,10 @@ class MCPContextManager {
 
     // Add context summaries
     contexts.forEach(({ id, context, implementationBrief }) => {
-      response += `### ${id}: ${context.content.split('\n')[0]}\n`;
+      const contentSummary = typeof context.content === 'string' ?
+        context.content.split('\n')[0] :
+        (context.content?.description || context.content?.title || 'No description');
+      response += `### ${id}: ${contentSummary}\n`;
       response += `**Source**: ${context.source.filePath}\n`;
 
       if (implementationBrief) {

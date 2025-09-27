@@ -66,7 +66,10 @@ export default async function handleInitRepoImplement(context, feature) {
     // Show found items
     response += `### 📋 Related Documentation\n`;
     searchResult.contexts.forEach(({ id, context, implementationBrief }) => {
-      response += `**${id}**: ${context.content.split('\n')[0]}\n`;
+      const contentSummary = typeof context.content === 'string' ?
+        context.content.split('\n')[0] :
+        (context.content?.description || context.content?.title || 'No description');
+      response += `**${id}**: ${contentSummary}\n`;
 
       if (implementationBrief) {
         response += `- **Approach**: ${implementationBrief.technicalApproach}\n`;
