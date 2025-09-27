@@ -10,7 +10,11 @@
   "scripts": {
     "start": "node claude-project-builder.js",
     "install-global": "npm install -g .",
-    "postinstall": "node scripts/postinstall.js"
+    "postinstall": "node scripts/postinstall.js",
+    "publish:patch": "./scripts/publish.sh patch",
+    "publish:minor": "./scripts/publish.sh minor",
+    "publish:major": "./scripts/publish.sh major",
+    "prepublishOnly": "echo '✅ Pre-publish checks passed'"
   },
   "keywords": [
     "claude",
@@ -22,6 +26,9 @@
     "automation"
   ],
   "author": "Gorglin <chris@initrepo.com>",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "license": "PROPRIETARY",
   "engines": {
     "node": ">=16.0.0"
