@@ -1,0 +1,95 @@
+{
+  "name": "initrepo-claude-agent-extension",
+  "version": "1.0.0",
+  "description": "Claude Code extension for InitRepo Claude Agent slash commands",
+  "author": "Gorglin <chris@initrepo.com>",
+  "license": "PROPRIETARY",
+  "claude-code": {
+    "extension": {
+      "name": "InitRepo Claude Agent",
+      "version": "1.0.0",
+      "description": "Systematic project building using AI-powered InitRepo methodology",
+      "icon": "🤖",
+      "category": "AI Agents"
+    },
+    "commands": [
+      {
+        "name": "initrepo-build",
+        "description": "Run full InitRepo systematic project build (4-phase workflow)",
+        "usage": "/initrepo-build",
+        "examples": [
+          "/initrepo-build"
+        ],
+        "handler": "./commands/build.js",
+        "permissions": [
+          "execute",
+          "read-project",
+          "write-project"
+        ]
+      },
+      {
+        "name": "initrepo-check",
+        "description": "Validate InitRepo project setup and agent environment",
+        "usage": "/initrepo-check",
+        "examples": [
+          "/initrepo-check"
+        ],
+        "handler": "./commands/check.js",
+        "permissions": [
+          "execute",
+          "read-project"
+        ]
+      },
+      {
+        "name": "initrepo-phase",
+        "description": "Run specific phase of InitRepo building process",
+        "usage": "/initrepo-phase <phase>",
+        "examples": [
+          "/initrepo-phase discovery",
+          "/initrepo-phase planning",
+          "/initrepo-phase implementation",
+          "/initrepo-phase quality"
+        ],
+        "handler": "./commands/phase.js",
+        "arguments": [
+          {
+            "name": "phase",
+            "description": "Phase to execute",
+            "required": true,
+            "type": "choice",
+            "choices": ["discovery", "planning", "implementation", "quality"]
+          }
+        ],
+        "permissions": [
+          "execute",
+          "read-project",
+          "write-project"
+        ]
+      }
+    ],
+    "settings": {
+      "agentPath": {
+        "type": "string",
+        "default": "npx initrepo-claude-agent",
+        "description": "Path to InitRepo Claude Agent executable"
+      },
+      "autoSetupClaudeCode": {
+        "type": "boolean",
+        "default": true,
+        "description": "Automatically setup Claude Code integration when extension loads"
+      },
+      "showDetailedOutput": {
+        "type": "boolean",
+        "default": true,
+        "description": "Show detailed output from agent execution"
+      }
+    },
+    "activation": {
+      "events": ["onCommand"],
+      "conditions": {
+        "hasFile": ["docs/README.md", "package.json"],
+        "orConditions": true
+      }
+    }
+  }
+}

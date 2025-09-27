@@ -1,0 +1,52 @@
+{
+  "name": "initrepo-claude-agent-extension",
+  "version": "1.0.0",
+  "description": "Claude Code extension for InitRepo Claude Agent slash commands",
+  "main": "index.js",
+  "type": "module",
+  "keywords": [
+    "claude-code",
+    "extension",
+    "initrepo",
+    "agent",
+    "slash-commands"
+  ],
+  "author": "Gorglin <chris@initrepo.com>",
+  "license": "PROPRIETARY",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "claude-code": {
+    "extension": true,
+    "version": "1.0.0",
+    "commands": [
+      {
+        "name": "initrepo-build",
+        "description": "Run InitRepo Claude Agent to build the project systematically",
+        "handler": "commands/build.js"
+      },
+      {
+        "name": "initrepo-check",
+        "description": "Check InitRepo project setup and agent environment",
+        "handler": "commands/check.js"
+      },
+      {
+        "name": "initrepo-phase",
+        "description": "Run specific phase of the InitRepo building process",
+        "handler": "commands/phase.js",
+        "args": [
+          {
+            "name": "phase",
+            "description": "Phase to run (discovery|planning|implementation|quality)",
+            "required": true,
+            "type": "string",
+            "choices": ["discovery", "planning", "implementation", "quality"]
+          }
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "initrepo-claude-agent": "^1.1.1"
+  }
+}
