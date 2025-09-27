@@ -1,0 +1,181 @@
+{
+  "agentProfile": {
+    "name": "Claude Project Builder Agent",
+    "version": "1.0.0",
+    "description": "Sophisticated AI agent for building InitRepo projects from start to finish",
+    "capabilities": [
+      "project_discovery",
+      "task_planning",
+      "dependency_analysis",
+      "code_generation",
+      "quality_assurance",
+      "progress_tracking"
+    ]
+  },
+
+  "mcpIntegration": {
+    "serverConfig": {
+      "command": "node",
+      "args": ["dist/packages/mcp-server/src/index.js"],
+      "cwd": "/mnt/c/initrepo-mcp",
+      "env": {
+        "AGENT_MODE": "project_builder",
+        "LOG_LEVEL": "info"
+      }
+    },
+    "tools": {
+      "discovery": [
+        "listProjects",
+        "selectProject",
+        "refreshProjects",
+        "getProjectStatus"
+      ],
+      "planning": [
+        "analyzeTaskDependencies",
+        "identifyNextCriticalTasks",
+        "generateTaskSchedule",
+        "extractTechnicalDecisions",
+        "assessTechnicalFeasibility"
+      ],
+      "implementation": [
+        "getContextById",
+        "generateSmartImplementationBrief",
+        "validateContextUnderstanding",
+        "chunkLargeContext",
+        "getImplementationContext"
+      ],
+      "quality": [
+        "validateCrossReferences",
+        "checkDocumentationGaps",
+        "findOrphanedReferences",
+        "validateIdConsistency",
+        "generateProjectHealthReport"
+      ]
+    }
+  },
+
+  "agentBehavior": {
+    "phases": {
+      "discovery": {
+        "description": "Discover and analyze project structure",
+        "successCriteria": {
+          "projectsFound": ">=1",
+          "healthScore": ">=60",
+          "activeProject": "selected"
+        },
+        "maxRetries": 3
+      },
+      "planning": {
+        "description": "Create comprehensive implementation plan",
+        "successCriteria": {
+          "tasksIdentified": ">=5",
+          "dependenciesResolved": ">=90%",
+          "feasibilityScore": ">=70"
+        },
+        "maxRetries": 2
+      },
+      "implementation": {
+        "description": "Implement features following planned order",
+        "successCriteria": {
+          "tasksCompleted": ">=95%",
+          "codeQuality": "high",
+          "testsPass": true
+        },
+        "maxRetries": 1
+      },
+      "quality": {
+        "description": "Validate and finalize project",
+        "successCriteria": {
+          "healthScore": ">=90",
+          "documentsValid": true,
+          "noOrphanedRefs": true
+        },
+        "maxRetries": 3
+      }
+    },
+
+    "priorities": {
+      "critical": {
+        "weight": 100,
+        "description": "Blocking dependencies that prevent other work"
+      },
+      "high": {
+        "weight": 75,
+        "description": "High-impact features with many dependents"
+      },
+      "medium": {
+        "weight": 50,
+        "description": "Standard functionality and improvements"
+      },
+      "low": {
+        "weight": 25,
+        "description": "Nice-to-have features and optimizations"
+      }
+    },
+
+    "codeStandards": {
+      "patterns": ["typescript", "clean-architecture", "dependency-injection"],
+      "testing": ["unit-tests", "integration-tests", "error-scenarios"],
+      "documentation": ["inline-comments", "api-docs", "usage-examples"],
+      "errorHandling": ["try-catch", "graceful-degradation", "user-feedback"]
+    }
+  },
+
+  "prompts": {
+    "systemPrompt": "You are the Claude Project Builder Agent, a sophisticated AI system designed to build InitRepo projects from start to finish. You have access to 39 specialized MCP tools for project analysis, task management, and code generation. Always follow the 4-phase approach: Discovery → Planning → Implementation → Quality Assurance. Use the most specific MCP tool for each scenario and validate understanding before implementation.",
+
+    "phasePrompts": {
+      "discovery": "PHASE 1: PROJECT DISCOVERY & SETUP\nAnalyze project structure and establish baseline. Use listProjects(), getProjectStatus(), validateDocumentationCompleteness(), and generateProjectHealthReport().",
+
+      "planning": "PHASE 2: STRATEGIC TASK PLANNING\nCreate comprehensive implementation plan. Use analyzeTaskDependencies(), identifyNextCriticalTasks(), generateTaskSchedule(), and assessTechnicalFeasibility().",
+
+      "implementation": "PHASE 3: ITERATIVE IMPLEMENTATION\nImplement features following planned order. For each task: getContextById(), generateSmartImplementationBrief(), validateContextUnderstanding(), then implement with proper error handling and tests.",
+
+      "quality": "PHASE 4: QUALITY ASSURANCE & COMPLETION\nValidate and finalize project. Use validateCrossReferences(), checkDocumentationGaps(), findOrphanedReferences(), validateIdConsistency(), and generateProjectHealthReport()."
+    }
+  },
+
+  "monitoring": {
+    "metrics": [
+      "healthScore",
+      "completionRate",
+      "tasksCompleted",
+      "dependencyIssuesResolved",
+      "codeQualityScore",
+      "timeToCompletion"
+    ],
+    "alerts": {
+      "healthScoreBelow": 70,
+      "blockedTasksAbove": 3,
+      "implementationStalled": 300,
+      "qualityIssuesAbove": 5
+    }
+  },
+
+  "usage": {
+    "commands": {
+      "start": "claude-agent start project-builder",
+      "resume": "claude-agent resume --phase <phase> --task <task-id>",
+      "status": "claude-agent status",
+      "config": "claude-agent config --file claude-agent-config.json"
+    },
+    "examples": [
+      {
+        "description": "Build entire project from scratch",
+        "command": "claude-agent start project-builder"
+      },
+      {
+        "description": "Resume from implementation phase",
+        "command": "claude-agent resume --phase implementation"
+      },
+      {
+        "description": "Build specific project",
+        "command": "claude-agent start project-builder --project-id abc123"
+      },
+      {
+        "description": "Dry run simulation",
+        "command": "claude-agent start project-builder --dry-run"
+      }
+    ]
+  }
+}
