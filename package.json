@@ -1,7 +1,7 @@
 {
   "name": "initrepo-claude-agent",
-  "version": "1.1.1",
-  "description": "AI agent for building InitRepo projects systematically using MCP tools",
+  "version": "2.0.0",
+  "description": "Autonomous AI agent for Claude Code - Build InitRepo projects with minimal human intervention",
   "type": "module",
   "main": "claude-project-builder.js",
   "bin": {
@@ -18,13 +18,15 @@
     "prepublishOnly": "echo '✅ Pre-publish checks passed'"
   },
   "keywords": [
-    "claude",
+    "claude-code",
+    "autonomous-agent",
     "ai",
-    "agent",
     "initrepo",
     "mcp",
     "project-builder",
-    "automation"
+    "slash-commands",
+    "automation",
+    "minimal-intervention"
   ],
   "author": "Gorglin <chris@initrepo.com>",
   "publishConfig": {
@@ -50,6 +52,7 @@
     "CLAUDE.md",
     "README.md",
     "LICENSE",
-    "scripts/"
+    "scripts/",
+    "claude-code-extension/"
   ]
 }

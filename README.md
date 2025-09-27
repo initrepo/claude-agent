@@ -1,22 +1,36 @@
-# Claude Agent for InitRepo
+# InitRepo Autonomous Agent for Claude Code
 
-**Intelligent project builder agent that integrates with Claude AI to systematically build InitRepo projects using MCP tools.**
+**🤖 Autonomous project building with minimal human intervention - Built for Claude Code slash commands**
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-green)
 ![License](https://img.shields.io/badge/license-Proprietary-red)
+![Claude Code](https://img.shields.io/badge/Claude_Code-Extension-purple)
 
 ## 🚀 Overview
 
-This repository contains a sophisticated AI agent system designed to automate the complete lifecycle of InitRepo project development. The agent follows a structured 4-phase approach to systematically analyze, plan, implement, and validate software projects using Claude AI and Model Context Protocol (MCP) tools.
+**Set it up once, then let the AI build your entire project autonomously.**
 
-## 🎯 Key Features
+This autonomous AI agent integrates directly with Claude Code to build InitRepo projects with **minimal human intervention**. After a simple setup, just run `/initrepo-agent` and watch as the AI systematically discovers, plans, implements, and validates your entire project following InitRepo methodology.
 
-- **4-Phase Structured Workflow**: Discovery → Planning → Implementation → Quality Assurance
-- **MCP Integration**: Communicates with InitRepo MCP server using 39 specialized tools
-- **Intelligent Task Management**: Priority-based queues with dependency resolution
-- **Real-time Progress Tracking**: Health scoring and completion metrics
-- **CLI Interface**: Command-line execution with phase-specific controls
+## 🎯 Autonomous Features
+
+### 🤖 **Primary Feature: Claude Code Slash Commands**
+- **`/initrepo-agent`** - Fully autonomous project building (hands-off!)
+- **`/initrepo-status`** - Real-time progress monitoring
+- **`/initrepo-verify`** - Task completion validation
+
+### ⚡ **Minimal Human Intervention**
+- **Setup**: One-time installation and configuration (2 minutes)
+- **Usage**: Single command starts autonomous building (`/initrepo-agent`)
+- **Monitoring**: Optional progress checks (`/initrepo-status`)
+- **Verification**: Optional final validation (`/initrepo-verify`)
+
+### 🧠 **Intelligent Automation**
+- **Document Intelligence**: Reads and understands InitRepo documentation automatically
+- **Task Discovery**: Finds all tasks (T-001, T-002, etc.) across documents
+- **Dependency Resolution**: Determines optimal implementation order automatically
+- **Quality Assurance**: Self-validates implementation and documentation integrity
 
 ## 🏗️ Architecture
 
@@ -39,26 +53,46 @@ This repository contains a sophisticated AI agent system designed to automate th
 - **External Dependency**: InitRepo MCP Server (`initrepo-mcp` project)
 - **Platform**: Cross-platform (Windows WSL2, Linux, macOS)
 
-## 📋 Usage
+## 🚀 Quick Start (2 minutes setup)
 
-### Basic Execution
+### **Step 1: Install**
 ```bash
-node claude-project-builder.js
+npm install -g initrepo-claude-agent@latest
 ```
 
-### Phase-Specific Execution
+### **Step 2: Setup Claude Code Extension**
 ```bash
-# Run specific phases
-node claude-project-builder.js --phase discovery
-node claude-project-builder.js --phase planning
-node claude-project-builder.js --phase implementation
-node claude-project-builder.js --phase quality
+# Navigate to your project
+cd your-project
+
+# Setup Claude Code integration
+initrepo-claude --setup-claude-code
+
+# Install extension
+mkdir -p ~/.claude-code/extensions/initrepo-agent
+cp -r node_modules/initrepo-claude-agent/claude-code-extension/* ~/.claude-code/extensions/initrepo-agent/
 ```
 
-### Simulation Mode
+### **Step 3: Start Building Autonomously**
 ```bash
-# Dry-run without making changes
-node claude-project-builder.js --dry-run
+# In Claude Code CLI:
+/initrepo-agent
+```
+
+**That's it! The agent now builds your project autonomously.** 🎉
+
+## 🤖 Autonomous Commands
+
+| Command | Purpose | Human Input Required |
+|---------|---------|---------------------|
+| `/initrepo-agent` | **Start autonomous building** | 1 command, then hands-off |
+| `/initrepo-status` | **Monitor progress** | Optional status checks |
+| `/initrepo-verify` | **Validate completion** | Optional final verification |
+
+### **Legacy CLI Interface** (Optional)
+The original CLI interface is still available for advanced users:
+```bash
+node claude-project-builder.js --help
 ```
 
 ## 🔧 Configuration
