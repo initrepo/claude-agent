@@ -597,11 +597,11 @@ REPOSITORY:
             process.exit(1);
         }
 
-        return; // Don't exit immediately, let spawn handle it
+        // Don't run the agent after setup, let the spawn process handle completion
+    } else {
+        // Run the agent
+        agent.run().catch(console.error);
     }
-
-    // Run the agent
-    agent.run().catch(console.error);
 }
 
 export default ClaudeProjectBuilderAgent;
