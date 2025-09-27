@@ -14,8 +14,109 @@
     },
     "commands": [
       {
+        "name": "initrepo-agent",
+        "description": "🤖 Autonomous project building - Minimal human intervention required",
+        "usage": "/initrepo-agent",
+        "examples": [
+          "/initrepo-agent"
+        ],
+        "handler": "./commands/autonomous-build.js",
+        "permissions": [
+          "execute",
+          "read-project",
+          "write-project",
+          "mcp-connection"
+        ]
+      },
+      {
+        "name": "initrepo-status",
+        "description": "📊 Show current project progress and task status",
+        "usage": "/initrepo-status",
+        "examples": [
+          "/initrepo-status"
+        ],
+        "handler": "./commands/status.js",
+        "permissions": [
+          "execute",
+          "read-project",
+          "mcp-connection"
+        ]
+      },
+      {
+        "name": "initrepo-verify",
+        "description": "✅ Verify completed tasks and validate implementation quality",
+        "usage": "/initrepo-verify [task-id]",
+        "examples": [
+          "/initrepo-verify",
+          "/initrepo-verify T-025"
+        ],
+        "handler": "./commands/verify.js",
+        "arguments": [
+          {
+            "name": "taskId",
+            "description": "Optional specific task ID to verify",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "permissions": [
+          "execute",
+          "read-project",
+          "mcp-connection"
+        ]
+      },
+      {
+        "name": "initrepo-search",
+        "description": "🔍 Intelligent search through InitRepo documentation with context retrieval",
+        "usage": "/initrepo-search <query>",
+        "examples": [
+          "/initrepo-search email warming",
+          "/initrepo-search user authentication",
+          "/initrepo-search T-025"
+        ],
+        "handler": "./commands/smart-search.js",
+        "arguments": [
+          {
+            "name": "query",
+            "description": "Search term, feature name, or task ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "permissions": [
+          "execute",
+          "read-project",
+          "mcp-connection"
+        ]
+      },
+      {
+        "name": "initrepo-implement",
+        "description": "🔨 Get intelligent implementation plan with context, dependencies, and specifications",
+        "usage": "/initrepo-implement <feature>",
+        "examples": [
+          "/initrepo-implement email warming",
+          "/initrepo-implement T-025",
+          "/initrepo-implement user management"
+        ],
+        "handler": "./commands/smart-implement.js",
+        "arguments": [
+          {
+            "name": "feature",
+            "description": "Feature name or task ID to implement",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "permissions": [
+          "execute",
+          "read-project",
+          "write-project",
+          "mcp-connection"
+        ]
+      },
+      {
         "name": "initrepo-build",
-        "description": "Run full InitRepo systematic project build (4-phase workflow)",
+        "description": "⚡ Run full InitRepo systematic project build (4-phase workflow)",
         "usage": "/initrepo-build",
         "examples": [
           "/initrepo-build"
@@ -29,7 +130,7 @@
       },
       {
         "name": "initrepo-check",
-        "description": "Validate InitRepo project setup and agent environment",
+        "description": "✅ Validate InitRepo project setup and agent environment",
         "usage": "/initrepo-check",
         "examples": [
           "/initrepo-check"
@@ -42,7 +143,7 @@
       },
       {
         "name": "initrepo-phase",
-        "description": "Run specific phase of InitRepo building process",
+        "description": "🎯 Run specific phase of InitRepo building process",
         "usage": "/initrepo-phase <phase>",
         "examples": [
           "/initrepo-phase discovery",
