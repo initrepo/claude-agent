@@ -1,6 +1,6 @@
 {
   "name": "initrepo-claude-agent",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Autonomous AI agent for Claude Code - Build InitRepo projects with minimal human intervention",
   "type": "module",
   "main": "claude-project-builder.js",
