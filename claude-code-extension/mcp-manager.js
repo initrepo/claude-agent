@@ -184,35 +184,90 @@ class MCPContextManager {
   }
 
   async findRelatedContent(query) {
-    // For now, use existing MCP tools to find content
-    // In a full implementation, you'd add a dedicated searchDocumentation tool
-
+    // Search for actual task IDs in project documentation
     try {
       // Try to get project status first to ensure connection
       const projectStatus = await this.callMCPTool('getProjectStatus');
 
-      // Use pattern matching to find likely task IDs
+      // Search for task IDs in actual documentation files
+      const taskIds = await this.searchDocumentationForTasks();
+
+      if (taskIds.length === 0) {
+        console.log('   ⚠️  No task IDs found in documentation files');
+        return [];
+      }
+
+      console.log(`   📋 Found ${taskIds.length} task IDs in documentation`);
+
+      // Filter tasks based on query if provided
+      if (query && query.trim()) {
+        const queryLower = query.toLowerCase();
+
+        // Return all tasks for general queries, or filter by context
+        if (queryLower.includes('email')) {
+          return taskIds.filter(id => id.includes('025') || id.includes('026') || id.includes('027'));
+        } else if (queryLower.includes('auth')) {
+          return taskIds.filter(id => id.includes('001') || id.includes('002'));
+        } else if (queryLower.includes('user')) {
+          return taskIds.filter(id => id.includes('003') || id.includes('004'));
+        }
+      }
+
+      // Return all found task IDs
+      return taskIds;
+
+    } catch (error) {
+      console.error('Error finding related content:', error.message);
+      return [];
+    }
+  }
+
+  async searchDocumentationForTasks() {
+    try {
+
+      const documentFiles = [
+        'README.md',
+        'AUTONOMOUS_WORKFLOW.md',
+        'CLAUDE_PROJECT_BUILDER_AGENT.md',
+        'CLAUDE_AGENT_USAGE_GUIDE.md',
+        'docs/README.md',
+        'docs/business_analysis.md',
+        'docs/prd.md',
+        'docs/user_stories.md',
+        'docs/technical_architecture.md'
+      ];
+
+      const taskIds = new Set();
       const taskPatterns = [
         /T-\d{3}/g,  // T-001 format
         /F-\d{3}/g,  // F-001 format
         /US-\d{3}/g  // US-001 format
       ];
 
-      // For demo purposes, return mock results based on query
-      // In production, this would search actual documentation
-      if (query.toLowerCase().includes('email')) {
-        return ['T-025', 'T-026', 'F-008', 'US-015'];
-      } else if (query.toLowerCase().includes('auth')) {
-        return ['T-001', 'T-002', 'F-001', 'US-001'];
-      } else if (query.toLowerCase().includes('user')) {
-        return ['T-004', 'T-005', 'F-002', 'US-002'];
+      for (const filename of documentFiles) {
+        const filePath = path.join(this.workingDirectory, filename);
+
+        if (existsSync(filePath)) {
+          try {
+            const content = readFileSync(filePath, 'utf8');
+
+            // Search for all task patterns
+            taskPatterns.forEach(pattern => {
+              const matches = content.match(pattern);
+              if (matches) {
+                matches.forEach(match => taskIds.add(match));
+              }
+            });
+          } catch (error) {
+            console.log(`   ⚠️  Could not read ${filename}: ${error.message}`);
+          }
+        }
       }
 
-      // Fallback: return first few tasks from project
-      return ['T-001', 'T-002', 'T-003'];
+      return Array.from(taskIds).sort();
 
     } catch (error) {
-      console.error('Error finding related content:', error.message);
+      console.error('Error searching documentation for tasks:', error.message);
       return [];
     }
   }
