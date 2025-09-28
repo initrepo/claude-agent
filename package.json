@@ -11,6 +11,7 @@
     "start": "node claude-project-builder.js",
     "install-global": "npm install -g .",
     "postinstall": "node scripts/postinstall.js",
+    "setup-agents": "node scripts/setup-claude-agents.js",
     "publish:patch": "./scripts/publish.sh patch",
     "publish:minor": "./scripts/publish.sh minor",
     "publish:major": "./scripts/publish.sh major",

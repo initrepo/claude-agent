@@ -4,7 +4,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a **Claude AI Agent System** for building InitRepo projects systematically using MCP (Model Context Protocol) tools. The main component is a Node.js-based agent (`claude-project-builder.js`) that follows a 4-phase structured approach to project development.
+This is a **Claude AI Agent System** for building InitRepo projects systematically using MCP (Model Context Protocol) tools. The system provides both standalone CLI functionality and integrates with Claude Code's native agent system for autonomous project building.
+
+## 🤖 Claude Code Agent Integration
+
+This project includes specialized Claude Code agents for InitRepo methodology. See `AGENTS.md` for detailed agent definitions.
+
+### Available Agents:
+- **initrepo-agent**: Autonomous project building (4-phase workflow)
+- **initrepo-status**: Project monitoring and health assessment
+- **initrepo-verify**: Quality assurance and task verification
+
+### Available Slash Commands:
+- `/initrepo-agent` - Start autonomous building
+- `/initrepo-status` - Check project status and health
+- `/initrepo-verify [task-id]` - Verify task completion
+
+### Setting Up Agents (First Time):
+Run the agent setup script to create proper Claude Code agents and commands:
+```bash
+./setup-claude-agents.sh   # Linux/Mac
+setup-claude-agents.bat    # Windows
+```
+
+This will create the agents using Claude Code's native system:
+```bash
+claude agents create new initrepo-agent --generate-with-claude "..."
+claude commands create new initrepo-agent --generate-with-claude "..."
+```
 
 ## Commands
 
